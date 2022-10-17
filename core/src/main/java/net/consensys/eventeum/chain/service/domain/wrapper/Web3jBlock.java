@@ -19,7 +19,6 @@ import net.consensys.eventeum.chain.service.domain.Block;
 import net.consensys.eventeum.chain.service.domain.Transaction;
 import net.consensys.eventeum.utils.ModelMapperFactory;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 import org.web3j.crypto.Keys;
 import org.web3j.protocol.core.methods.response.EthBlock;
 
@@ -29,6 +28,8 @@ import java.util.stream.Collectors;
 
 @Data
 public class Web3jBlock implements Block {
+
+    private final static String NONCE_ZERO_HEX = "0x0000000000000000";
 
     private BigInteger number;
     private String hash;
@@ -63,7 +64,7 @@ public class Web3jBlock implements Block {
 
                     //Nonce can be null which throws exception in web3j when
                     //calling getNonce (because of attempted hex conversion)
-                    if (web3jBlock.getNonceRaw() == null) {
+                    if (web3jBlock.getNonceRaw() == null || web3jBlock.getNonceRaw().equals(NONCE_ZERO_HEX)) {
                         mapper.skip(Web3jBlock::setNonce);
                     }
                 });
